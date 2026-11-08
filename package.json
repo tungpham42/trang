@@ -1,0 +1,51 @@
+{
+  "name": "lecture-learner",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "dev": "netlify dev",
+    "typecheck": "tsc --noEmit",
+    "typecheck:functions": "tsc -p netlify/tsconfig.json"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.5.1",
+    "@netlify/functions": "^2.8.2",
+    "antd": "^5.22.0",
+    "dayjs": "^1.11.13",
+    "firebase": "^10.14.1",
+    "firebase-admin": "^12.7.0",
+    "jszip": "^3.10.1",
+    "pdfjs-dist": "3.11.174",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.1",
+    "react-router-dom": "^6.28.0",
+    "react-scripts": "5.0.1",
+    "remark-gfm": "^4.0.0",
+    "typescript": "^4.9.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+[build]
+  # CRA treats ESLint warnings as errors when CI=true (Netlify sets it), so relax that.
+  command = "CI=false npm run build"
+  publish = "build"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["firebase-admin"]
+
+[dev]
+  framework = "#custom"
+  command = "npm start"
+  targetPort = 3000
+  port = 8888
+
+[[redirects]]
+  from = "/api/ai"
+  to = "/.netlify/functions/ai"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/firebase-messaging-sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+    Service-Worker-Allowed = "/"
