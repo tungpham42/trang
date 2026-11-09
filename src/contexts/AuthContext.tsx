@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInAnonymously,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -16,6 +17,7 @@ interface AuthContextValue {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInAsGuest: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (
     name: string,
@@ -47,6 +49,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       signInWithGoogle: async () => {
         await signInWithPopup(auth, googleProvider);
+      },
+      signInAsGuest: async () => {
+        await signInAnonymously(auth);
       },
       signInWithEmail: async (email, password) => {
         await signInWithEmailAndPassword(auth, email, password);

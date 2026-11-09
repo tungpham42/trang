@@ -28,6 +28,8 @@ function friendlyError(err: unknown): string {
       return "No problem, sign-in was cancelled.";
     case "auth/too-many-requests":
       return "Lots of attempts! Take a short break and try again in a few minutes.";
+    case "auth/operation-not-allowed":
+      return "Guest mode isn't available right now.";
     default:
       return "Something went wrong. Please try again.";
   }
@@ -40,8 +42,14 @@ const PERKS = [
 ];
 
 export default function Login() {
-  const { user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail } =
-    useAuth();
+  const {
+    user,
+    loading,
+    signInWithGoogle,
+    signInAsGuest,
+    signInWithEmail,
+    signUpWithEmail,
+  } = useAuth();
   const { message } = AntApp.useApp();
   const location = useLocation();
   const [busy, setBusy] = useState(false);
@@ -68,13 +76,37 @@ export default function Login() {
         run(() => signInWithEmail(v.email, v.password))
       }
     >
-      <Form.Item name="email" rules={[{ required: true, type: "email", message: "Enter a valid email" }]}>
-        <Input prefix={<MailOutlined />} placeholder="Email" autoComplete="email" size="large" />
+      <Form.Item
+        name="email"
+        rules={[
+          { required: true, type: "email", message: "Enter a valid email" },
+        ]}
+      >
+        <Input
+          prefix={<MailOutlined />}
+          placeholder="Email"
+          autoComplete="email"
+          size="large"
+        />
       </Form.Item>
-      <Form.Item name="password" rules={[{ required: true, message: "Enter your password" }]}>
-        <Input.Password prefix={<LockOutlined />} placeholder="Password" autoComplete="current-password" size="large" />
+      <Form.Item
+        name="password"
+        rules={[{ required: true, message: "Enter your password" }]}
+      >
+        <Input.Password
+          prefix={<LockOutlined />}
+          placeholder="Password"
+          autoComplete="current-password"
+          size="large"
+        />
       </Form.Item>
-      <Button type="primary" htmlType="submit" size="large" block loading={busy}>
+      <Button
+        type="primary"
+        htmlType="submit"
+        size="large"
+        block
+        loading={busy}
+      >
         Sign in
       </Button>
     </Form>
@@ -89,15 +121,44 @@ export default function Login() {
       }
     >
       <Form.Item name="name">
-        <Input prefix={<UserOutlined />} placeholder="Name (optional)" autoComplete="name" size="large" />
+        <Input
+          prefix={<UserOutlined />}
+          placeholder="Name (optional)"
+          autoComplete="name"
+          size="large"
+        />
       </Form.Item>
-      <Form.Item name="email" rules={[{ required: true, type: "email", message: "Enter a valid email" }]}>
-        <Input prefix={<MailOutlined />} placeholder="Email" autoComplete="email" size="large" />
+      <Form.Item
+        name="email"
+        rules={[
+          { required: true, type: "email", message: "Enter a valid email" },
+        ]}
+      >
+        <Input
+          prefix={<MailOutlined />}
+          placeholder="Email"
+          autoComplete="email"
+          size="large"
+        />
       </Form.Item>
-      <Form.Item name="password" rules={[{ required: true, min: 6, message: "At least 6 characters" }]}>
-        <Input.Password prefix={<LockOutlined />} placeholder="Password (6+ characters)" autoComplete="new-password" size="large" />
+      <Form.Item
+        name="password"
+        rules={[{ required: true, min: 6, message: "At least 6 characters" }]}
+      >
+        <Input.Password
+          prefix={<LockOutlined />}
+          placeholder="Password (6+ characters)"
+          autoComplete="new-password"
+          size="large"
+        />
       </Form.Item>
-      <Button type="primary" htmlType="submit" size="large" block loading={busy}>
+      <Button
+        type="primary"
+        htmlType="submit"
+        size="large"
+        block
+        loading={busy}
+      >
         Create my account
       </Button>
     </Form>
@@ -106,11 +167,21 @@ export default function Login() {
   return (
     <div className="auth">
       <section className="auth-hero">
-        <span className="brand-mark" style={{ background: "rgba(255,255,255,.22)", boxShadow: "none" }}>
+        <span
+          className="brand-mark"
+          style={{ background: "rgba(255,255,255,.22)", boxShadow: "none" }}
+        >
           <ReadOutlined />
         </span>
-        <h1>Learn faster,<br />remember longer.</h1>
-        <p>Turn long lectures and slides into study notes and flashcards, then review at just the right moments.</p>
+        <h1>
+          Learn faster,
+          <br />
+          remember longer.
+        </h1>
+        <p>
+          Turn long lectures and slides into study notes and flashcards, then
+          review at just the right moments.
+        </p>
         <ul className="auth-steps">
           {PERKS.map((p) => (
             <li key={p}>
@@ -128,7 +199,13 @@ export default function Login() {
           </h2>
           <p className="auth-sub">Sign in to pick up where you left off.</p>
 
-          <Button icon={<GoogleOutlined />} size="large" block loading={busy} onClick={() => run(signInWithGoogle)}>
+          <Button
+            icon={<GoogleOutlined />}
+            size="large"
+            block
+            loading={busy}
+            onClick={() => run(signInWithGoogle)}
+          >
             Continue with Google
           </Button>
           <Divider plain style={{ color: "var(--muted)", fontSize: 13 }}>
@@ -141,6 +218,19 @@ export default function Login() {
               { key: "up", label: "Create account", children: signUp },
             ]}
           />
+          <Divider plain style={{ color: "var(--muted)", fontSize: 13 }}>
+            or
+          </Divider>
+          <Button
+            type="text"
+            icon={<UserOutlined />}
+            size="large"
+            block
+            loading={busy}
+            onClick={() => run(signInAsGuest)}
+          >
+            Continue as guest
+          </Button>
         </div>
       </section>
     </div>
