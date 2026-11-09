@@ -6,12 +6,13 @@ import 'antd/dist/reset.css';
 import './index.css';
 import App from './App';
 import { AuthProvider } from './contexts/AuthContext';
+import { antdTheme } from './theme/antd';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
   <React.StrictMode>
-    <ConfigProvider theme={{ token: { colorPrimary: '#4f46e5', borderRadius: 10 } }}>
+    <ConfigProvider theme={antdTheme}>
       <AntApp>
         <BrowserRouter>
           <AuthProvider>
