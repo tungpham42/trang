@@ -40,7 +40,6 @@ body {
 
 @media (max-width: 640px) {
   .hide-sm { display: none; }
-  .page { padding: 20px 14px 96px; }
 }
 
 /* ---------- Brand mark ---------- */
@@ -73,52 +72,236 @@ body {
 }
 .brand-name span { color: var(--primary); }
 
-/* ---------- Glass top bar ---------- */
-.topbar {
+/* ---------- App shell (sidebar layout) ---------- */
+.app-shell {
+  display: flex;
+  min-height: 100vh; /* fallback */
+  min-height: 100dvh; /* excludes mobile browser bars */
+}
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Hidden until the phone breakpoint switches them on */
+.mobilebar,
+.bottomnav {
+  display: none;
+}
+
+/* ---------- Sidebar ----------
+   Selectors are doubled (.ant-menu.ant-menu-root) so they beat antd's own
+   menu rules, and padding uses !important because rc-menu writes inline
+   padding-left on inline-mode items. */
+.sidebar {
   position: sticky;
   top: 0;
+  align-self: flex-start;
   z-index: 20;
+  box-sizing: border-box;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  height: 68px;
-  padding: 0 20px;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 248px;
+  height: 100vh;
+  height: 100dvh;
+  padding: 18px 14px calc(14px + env(safe-area-inset-bottom, 0px))
+    calc(14px + env(safe-area-inset-left, 0px));
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: saturate(180%) blur(14px);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
-  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
 }
-.topbar .ant-menu {
+.sidebar-brand {
+  padding: 4px 6px 14px;
+}
+.sidebar .ant-menu.ant-menu-root {
   flex: 1;
-  min-width: 0;
-  border-bottom: none !important;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   background: transparent;
-  justify-content: center;
+  border-inline-end: none !important;
 }
-.topbar .ant-menu-item { font-weight: 600; }
+.sidebar .ant-menu.ant-menu-root .ant-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+  line-height: 44px;
+  margin: 2px 0;
+  padding-inline: 14px !important;
+  border-radius: 14px;
+  font-weight: 600;
+}
+.sidebar .ant-menu.ant-menu-root .ant-menu-item::after {
+  display: none !important;
+}
+.sidebar .ant-menu.ant-menu-root .ant-menu-item .anticon {
+  font-size: 18px;
+}
+.sidebar .ant-menu.ant-menu-root .ant-menu-item:hover {
+  background: rgba(109, 94, 252, 0.08);
+}
+.sidebar .ant-menu.ant-menu-root .ant-menu-item.ant-menu-item-selected {
+  background: #efedff;
+  color: var(--primary);
+}
+.sidebar-footer {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
 
-/* ---------- Bottom nav on small screens ---------- */
-@media (max-width: 760px) {
-  .topbar { height: 60px; padding: 0 12px; }
-  .topbar .ant-menu {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: 14px;
-    z-index: 30;
+/* ---------- User button (sidebar + phone top bar) ---------- */
+.user-btn.ant-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 10px 0 6px;
+}
+.user-name {
+  margin-left: 8px;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sidebar .user-btn.ant-btn {
+  width: 100%;
+  justify-content: flex-start;
+}
+.sidebar .user-name {
+  flex: 1;
+  max-width: none;
+  text-align: left;
+}
+
+/* ---------- Tablets: icon-only rail ---------- */
+@media (max-width: 1024px) and (min-width: 761px) {
+  .sidebar {
+    width: 76px;
+    padding-left: calc(10px + env(safe-area-inset-left, 0px));
+    padding-right: 10px;
+  }
+  .sidebar-brand {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    padding-inline: 0;
+  }
+  .sidebar .brand-name,
+  .sidebar .user-name,
+  .sidebar .ant-menu.ant-menu-root .ant-menu-item .ant-menu-title-content {
+    display: none;
+  }
+  .sidebar .ant-menu.ant-menu-root .ant-menu-item {
+    justify-content: center;
+    padding-inline: 0 !important;
+  }
+  .sidebar .user-btn.ant-btn {
+    justify-content: center;
+    padding: 0;
+  }
+}
+
+/* ---------- Phones: slim top bar + floating bottom nav ---------- */
+@media (max-width: 760px) {
+  .app-shell {
+    flex-direction: column;
+  }
+  .sidebar {
+    display: none;
+  }
+
+  .mobilebar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    height: calc(56px + env(safe-area-inset-top, 0px));
+    padding: env(safe-area-inset-top, 0px)
+      max(14px, env(safe-area-inset-right, 0px)) 0
+      max(14px, env(safe-area-inset-left, 0px));
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .mobilebar .brand {
+    min-width: 0;
+  }
+  .mobilebar .user-btn.ant-btn {
+    flex-shrink: 0;
+    padding: 0 6px;
+  }
+  .mobilebar .user-name {
+    display: none;
+  }
+
+  .bottomnav {
+    position: fixed;
+    left: max(12px, env(safe-area-inset-left, 0px));
+    right: max(12px, env(safe-area-inset-right, 0px));
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 30;
+    display: block;
     padding: 6px;
     border-radius: 22px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     box-shadow: var(--shadow-md);
-    border: 1px solid var(--line) !important;
+    border: 1px solid var(--line);
   }
-  .topbar .ant-menu-item { flex: 1; justify-content: center; }
-  .topbar .ant-menu-item .ant-menu-title-content { display: none; }
-  .topbar .ant-menu-item .anticon { font-size: 18px; margin: 0 !important; }
-  .topbar .ant-menu-overflow-item { flex: 1; }
+  .bottomnav .ant-menu.ant-menu-root {
+    display: flex;
+    justify-content: space-around;
+    gap: 4px;
+    background: transparent;
+    border-bottom: none !important;
+    line-height: 48px;
+  }
+  .bottomnav .ant-menu-overflow-item {
+    flex: 1;
+  }
+  .bottomnav .ant-menu-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px; /* comfortable touch target */
+    line-height: 48px;
+    margin: 0;
+    padding-inline: 0; /* small natural width so antd never collapses items into "..." */
+    border-radius: 16px;
+  }
+  .bottomnav .ant-menu-item::after {
+    display: none !important;
+  }
+  .bottomnav .ant-menu-item-selected {
+    background: #efedff;
+  }
+  .bottomnav .ant-menu-item .ant-menu-title-content {
+    display: none;
+  }
+  .bottomnav .ant-menu-item .anticon {
+    font-size: 20px;
+    margin: 0 !important;
+  }
+
+  .page {
+    padding: 20px 14px calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 360px) {
+  .brand-name {
+    font-size: 15px;
+  }
 }
 
 /* ---------- Hero / greeting ---------- */
@@ -290,6 +473,7 @@ body {
 /* ---------- Auth ---------- */
 .auth {
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   grid-template-columns: 1.1fr 1fr;
 }

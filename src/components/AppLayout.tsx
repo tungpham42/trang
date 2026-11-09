@@ -1,20 +1,74 @@
-import { Badge, Button, Dropdown, Layout, Menu, Avatar } from "antd";
+import { Avatar, Badge, Button, Dropdown, Menu } from "antd";
+import type { DropdownProps, MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   AudioOutlined,
   BookOutlined,
+  BulbOutlined,
   LogoutOutlined,
   PlusOutlined,
   SettingOutlined,
   ThunderboltOutlined,
-  BulbOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../contexts/AuthContext";
 import { useDueCount } from "../hooks/useDueCount";
 import { useReminders } from "../hooks/useReminders";
 import { useUserSettings } from "../hooks/useUserSettings";
 
-const { Header, Content } = Layout;
+function Brand({ onClick }: { onClick: () => void }) {
+  return (
+    <div
+      className="brand"
+      onClick={onClick}
+      onKeyDown={(e) => e.key === "Enter" && onClick()}
+      role="link"
+      tabIndex={0}
+    >
+      <span className="brand-mark">
+        <BulbOutlined />
+      </span>
+      <span className="brand-name">
+        Learning <span>Master</span> Ez
+      </span>
+    </div>
+  );
+}
+
+function UserMenu({
+  name,
+  initial,
+  onLogout,
+  placement,
+}: {
+  name: string;
+  initial: string;
+  onLogout: () => void;
+  placement: DropdownProps["placement"];
+}) {
+  return (
+    <Dropdown
+      placement={placement}
+      trigger={["click"]}
+      menu={{
+        items: [
+          {
+            key: "out",
+            icon: <LogoutOutlined />,
+            label: "Sign out",
+            onClick: onLogout,
+          },
+        ],
+      }}
+    >
+      <Button type="text" shape="round" className="user-btn">
+        <Avatar size={30} style={{ background: "var(--grad)", fontWeight: 700 }}>
+          {initial}
+        </Avatar>
+        <span className="user-name">{name}</span>
+      </Button>
+    </Dropdown>
+  );
+}
 
 export default function AppLayout() {
   const { user, logout } = useAuth();
@@ -28,9 +82,9 @@ export default function AppLayout() {
   const root = pathname.split("/")[1];
   const selected = root === "" || root === "lectures" ? "/" : `/${root}`;
 
-  const items = [
-    { key: "/", icon: <BookOutlined />, label: "Library" },
-    { key: "/new", icon: <PlusOutlined />, label: "New" },
+  const items: MenuProps["items"] = [
+    { key: "/", icon: <BookOutlined />, label: "Library", title: "Library" },
+    { key: "/new", icon: <PlusOutlined />, label: "New", title: "New" },
     {
       key: "/study",
       icon: (
@@ -39,62 +93,79 @@ export default function AppLayout() {
         </Badge>
       ),
       label: "Study",
+      title: "Study",
     },
-    { key: "/transcribe", icon: <AudioOutlined />, label: "Transcribe" },
-    { key: "/settings", icon: <SettingOutlined />, label: "Settings" },
+    {
+      key: "/transcribe",
+      icon: <AudioOutlined />,
+      label: "Transcribe",
+      title: "Transcribe",
+    },
+    {
+      key: "/settings",
+      icon: <SettingOutlined />,
+      label: "Settings",
+      title: "Settings",
+    },
   ];
 
   const name = user?.displayName || user?.email || "You";
   const initial = name.charAt(0).toUpperCase();
+  const goHome = () => navigate("/");
+  const onLogout = () => void logout();
+  const onSelect: MenuProps["onClick"] = ({ key }) => navigate(key);
 
   return (
-    <Layout style={{ minHeight: "100vh", background: "transparent" }}>
-      <Header className="topbar" style={{ padding: undefined, lineHeight: undefined }}>
-        <div className="brand" onClick={() => navigate("/")} role="link">
-          <span className="brand-mark">
-            <BulbOutlined />
-          </span>
-          <span className="brand-name hide-sm">
-            Learning <span>Master</span> Ez
-          </span>
+    <div className="app-shell">
+      {/* Desktop / tablet: left sidebar (icon rail on tablets) */}
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <Brand onClick={goHome} />
         </div>
 
+        <Menu
+          mode="inline"
+          selectedKeys={[selected]}
+          items={items}
+          onClick={onSelect}
+        />
+
+        <div className="sidebar-footer">
+          <UserMenu
+            name={name}
+            initial={initial}
+            onLogout={onLogout}
+            placement="topLeft"
+          />
+        </div>
+      </aside>
+
+      {/* Phones: slim top bar ... */}
+      <header className="mobilebar">
+        <Brand onClick={goHome} />
+        <UserMenu
+          name={name}
+          initial={initial}
+          onLogout={onLogout}
+          placement="bottomRight"
+        />
+      </header>
+
+      <main className="content">
+        <div className="page">
+          <Outlet />
+        </div>
+      </main>
+
+      {/* ... plus floating bottom nav */}
+      <nav className="bottomnav" aria-label="Main navigation">
         <Menu
           mode="horizontal"
           selectedKeys={[selected]}
           items={items}
-          onClick={({ key }) => navigate(key)}
+          onClick={onSelect}
         />
-
-        <Dropdown
-          menu={{
-            items: [
-              {
-                key: "out",
-                icon: <LogoutOutlined />,
-                label: "Sign out",
-                onClick: () => void logout(),
-              },
-            ],
-          }}
-          trigger={["click"]}
-        >
-          <Button type="text" shape="round" className="hide-sm-btn" style={{ height: 40, padding: "0 6px 0 4px" }}>
-            <Avatar size={30} style={{ background: "var(--grad)", fontWeight: 700 }}>
-              {initial}
-            </Avatar>
-            <span className="hide-sm" style={{ marginLeft: 6, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis" }}>
-              {name}
-            </span>
-          </Button>
-        </Dropdown>
-      </Header>
-
-      <Content>
-        <div className="page">
-          <Outlet />
-        </div>
-      </Content>
-    </Layout>
+      </nav>
+    </div>
   );
 }
