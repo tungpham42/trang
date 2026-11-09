@@ -6,6 +6,8 @@ import {
   GoogleOutlined,
   LockOutlined,
   MailOutlined,
+  ReadOutlined,
+  SmileOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../contexts/AuthContext";
@@ -105,7 +107,7 @@ export default function Login() {
     <div className="auth">
       <section className="auth-hero">
         <span className="brand-mark" style={{ background: "rgba(255,255,255,.22)", boxShadow: "none" }}>
-          🎓
+          <ReadOutlined />
         </span>
         <h1>Learn faster,<br />remember longer.</h1>
         <p>Turn long lectures and slides into study notes and flashcards, then review at just the right moments.</p>
@@ -121,7 +123,9 @@ export default function Login() {
 
       <section className="auth-panel">
         <div className="auth-card">
-          <h2>Welcome 👋</h2>
+          <h2>
+            Welcome <SmileOutlined className="hero-icon-sm" />
+          </h2>
           <p className="auth-sub">Sign in to pick up where you left off.</p>
 
           <Button icon={<GoogleOutlined />} size="large" block loading={busy} onClick={() => run(signInWithGoogle)}>

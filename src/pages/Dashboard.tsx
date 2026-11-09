@@ -15,6 +15,8 @@ import {
   LoadingOutlined,
   CalendarOutlined,
   CreditCardOutlined,
+  ReadOutlined,
+  SmileOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useAuth } from "../contexts/AuthContext";
@@ -66,7 +68,8 @@ export default function Dashboard() {
       <section className="hero">
         <h1>
           {greeting()}
-          {firstName ? `, ${firstName}` : ""} 👋
+          {firstName ? `, ${firstName}` : ""}{" "}
+          <SmileOutlined className="hero-icon" />
         </h1>
         <p>
           {due > 0
@@ -132,7 +135,9 @@ export default function Dashboard() {
           </div>
         ) : lectures.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-emoji">📚</div>
+            <div className="empty-icon">
+              <ReadOutlined />
+            </div>
             <h3>Your library is waiting</h3>
             <p>Upload a PDF or PowerPoint, or record a live transcript, and we'll do the rest.</p>
             <Button type="primary" size="large" icon={<PlusOutlined />} onClick={() => navigate("/new")}>
